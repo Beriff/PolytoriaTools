@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -46,6 +46,16 @@ namespace PolytoriaTools
             return JSONStringToAsset(responseText);
         }
 
+        public static Asset GetHatByName(string name)
+        {
+            return GetAssetsFromCatalog("hat", 0, name, 1)[0];
+        }
+
+        public static Asset GetToolByName(string name)
+        {
+            return GetAssetsFromCatalog("tool", 0, name, 1)[0];
+        }
+
         private static Asset JSONStringToAsset(string jsonstring)
         {
             Dictionary<string, string> control_dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonstring);
@@ -91,6 +101,40 @@ namespace PolytoriaTools
             return assets;
         }
 
+        public int ApproxPriceConvert(float ratio = 25f)
+        {
+            if (currency == "Bricks")
+            {
+                return (int)(price * ratio);
+            } else
+            {
+                return (int)(price / ratio);
+            }
+        }
+
+        public static Asset GetMostExpensiveAsset(Asset[] assets)
+        {
+            Asset expensive = assets[0];
+            foreach(Asset asset in assets)
+            {
+                if(asset.currency == expensive.currency)
+                {
+                    if(asset.price > expensive.price)
+                    {
+                        expensive = asset;
+                    }
+                } else
+                {
+                    if(asset.ApproxPriceConvert() > expensive.price)
+                    {
+                        expensive = asset;
+                    }
+                }
+            }
+            return expensive;
+        }
+
+        #region properties
         public int id { get; private set; }
         public string name { get; private set; }
         public string description { get; private set; }
@@ -111,6 +155,7 @@ namespace PolytoriaTools
         public int trade_value { get; private set; }
         public int version { get; private set; }
 
+        #endregion
 
     }
 
