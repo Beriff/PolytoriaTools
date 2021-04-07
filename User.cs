@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -136,6 +136,11 @@ namespace PolytoriaTools
         public User[] GetUserFriends()
         {
             return User.GetUserFriends(id);
+        }
+
+        public User NextUser(int incr = 1)
+        {
+            return User.GetUserById(id + incr);
         }
 
         public override string ToString()
